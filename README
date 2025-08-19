@@ -1,0 +1,16 @@
+tinysch
+=======
+
+a cli tool to create tv channels for daily scheduled tv programming.
+
+done
+----
+1. channel records can be created
+2. program records can be created (linked to channel)
+3. program can be played with mpv (dev only ig?)
+
+todo
+----
+1. auto create program records per channel
+2. random program schedule creation
+3. streaming programs as per schedule
