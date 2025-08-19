@@ -13,6 +13,14 @@ pub async fn add_program(pool: &Pool<Sqlite>, name: &str, desc: &str, path: &str
     Ok(())
 }
 
+pub async fn enable_program(pool: &Pool<Sqlite>, id: i64, enable: bool) -> Result<(), sqlx::Error> {
+    sqlx::query("UPDATE programs SET enable = ? WHERE id = ?").bind(enable).bind(id).execute(pool).await?;  
+    
+    println!("Program ID '{}' has been {}", id, if enable { "enabled" } else { "disabled" });
+   
+    Ok(())
+}
+
 pub async fn play_program(pool: &Pool<Sqlite>, id: i64) -> Result<(), sqlx::Error> {
     let row = sqlx::query(
         r#"SELECT file_path FROM programs WHERE id = ?"#,

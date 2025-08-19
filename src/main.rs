@@ -20,12 +20,32 @@ async fn main() -> Result<(), sqlx::Error> {
             commands::channel::add_channel(&pool, &name, &path).await?;
         }
 
+        Commands::EnableChannel { id, enable } => {
+            let enable_bool = match enable.as_str() {
+                "true" => true,
+                "false" => false,
+                _ => panic!("--enable must be true or false"),
+            };
+
+            commands::channel::enable_channel(&pool, id, enable_bool).await?;
+        }
+
         Commands::ListChannels => {
             commands::channel::list_channels(&pool).await?;
         }
 
         Commands::AddProgram { name, desc, path, start_time, end_time, channel_id } => {
             commands::program::add_program(&pool, &name, &desc, &path, &start_time, &end_time, channel_id).await?;
+        }
+
+        Commands::EnableProgram { id, enable } => {
+            let enable_bool = match enable.as_str() {
+                "true" => true,
+                "false" => false,
+                _ => panic!("--enable must be true or false"),
+            };
+            
+            commands::program::enable_program(&pool, id, enable_bool).await?;
         }
 
         Commands::PlayProgram { id } => {

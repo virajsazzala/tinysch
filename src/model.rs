@@ -5,6 +5,7 @@ pub struct Channel {
     pub id: i64,
     pub name: String,
     pub content_path: String,
+    pub enable: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
@@ -16,4 +17,5 @@ pub struct Program {
     pub start_time: String,
     pub end_time: String,
     pub channel_id: i64,
+    pub enable: bool,
 }

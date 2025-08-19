@@ -18,6 +18,14 @@ pub enum Commands {
         path: String,
     },
 
+    EnableChannel {
+        #[arg(short, long)]
+        id: i64,
+
+        #[arg(short, long)]
+        enable: String,
+    },
+
     ListChannels,
 
     AddProgram {
@@ -38,6 +46,14 @@ pub enum Commands {
 
         #[arg(short, long)]
         channel_id: i64,
+    },
+
+    EnableProgram {
+        #[arg(short, long)]
+        id: i64,
+
+        #[arg(short, long)]
+        enable: String,
     },
 
     PlayProgram {
