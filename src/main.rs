@@ -30,6 +30,10 @@ async fn main() -> Result<(), sqlx::Error> {
             commands::channel::enable_channel(&pool, id, enable_bool).await?;
         }
 
+        Commands::ScheduleChannel { id } => {
+            commands::schedule::create_schedule(&pool, id).await?;
+        }
+
         Commands::ListChannels => {
             commands::channel::list_channels(&pool).await?;
         }

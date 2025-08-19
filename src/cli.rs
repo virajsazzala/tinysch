@@ -26,6 +26,11 @@ pub enum Commands {
         enable: String,
     },
 
+    ScheduleChannel {
+        #[arg(short, long)]
+        id: i64,
+    },
+
     ListChannels,
 
     AddProgram {

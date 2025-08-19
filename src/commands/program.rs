@@ -1,33 +1,61 @@
+use crate::utils::player::play_file;
 use sqlx::Row;
 use sqlx::{Pool, Sqlite};
-use crate::utils::player::play_file;
 
-pub async fn add_program(pool: &Pool<Sqlite>, name: &str, desc: &str, path: &str, start_time: &str, end_time: &str, channel_id: i64) -> Result<(), sqlx::Error> {
+pub async fn add_program(
+    pool: &Pool<Sqlite>,
+    name: &str,
+    desc: &str,
+    path: &str,
+    start_time: &str,
+    end_time: &str,
+    channel_id: i64,
+) -> Result<(), sqlx::Error> {
     sqlx::query(
         r#"INSERT INTO programs (name, desc, file_path, start_time, end_time, channel_id) 
-        VALUES (?, ?, ?, ?, ?, ?)"#
-    ).bind(name).bind(desc).bind(path).bind(start_time).bind(end_time).bind(channel_id).execute(pool).await?;
-    
-    println!("The following program has been added:\nName: {}\nDesc: {}\nPath: {}\nStart Time: {}\nEnd Time: {}\nChannel ID: {}", name, desc, path, start_time, end_time, channel_id);
-   
+        VALUES (?, ?, ?, ?, ?, ?)"#,
+    )
+    .bind(name)
+    .bind(desc)
+    .bind(path)
+    .bind(start_time)
+    .bind(end_time)
+    .bind(channel_id)
+    .execute(pool)
+    .await?;
+
+    println!(
+        "The following program has been added:\nName: {}\nDesc: {}\nPath: {}\nStart Time: {}\nEnd Time: {}\nChannel ID: {}",
+        name, desc, path, start_time, end_time, channel_id
+    );
+
     Ok(())
 }
 
 pub async fn enable_program(pool: &Pool<Sqlite>, id: i64, enable: bool) -> Result<(), sqlx::Error> {
-    sqlx::query("UPDATE programs SET enable = ? WHERE id = ?").bind(enable).bind(id).execute(pool).await?;  
-    
-    println!("Program ID '{}' has been {}", id, if enable { "enabled" } else { "disabled" });
-   
+    sqlx::query("UPDATE programs SET enable = ? WHERE id = ?")
+        .bind(enable)
+        .bind(id)
+        .execute(pool)
+        .await?;
+
+    println!(
+        "Program ID '{}' has been {}",
+        id,
+        if enable { "enabled" } else { "disabled" }
+    );
+
     Ok(())
 }
 
 pub async fn play_program(pool: &Pool<Sqlite>, id: i64) -> Result<(), sqlx::Error> {
-    let row = sqlx::query(
-        r#"SELECT file_path FROM programs WHERE id = ?"#,
-    ).bind(id).fetch_one(pool).await?;
+    let row = sqlx::query(r#"SELECT file_path FROM programs WHERE id = ?"#)
+        .bind(id)
+        .fetch_one(pool)
+        .await?;
 
     let program_path: String = row.get("file_path");
-    
+
     println!("Now playing '{}'", program_path);
 
     if let Err(e) = play_file(&program_path).await {
@@ -51,7 +79,7 @@ pub async fn list_programs(pool: &Pool<Sqlite>) -> Result<(), sqlx::Error> {
             c.name as channel_name
         FROM programs p
         JOIN channels c ON p.channel_id = c.id
-        "#
+        "#,
     )
     .fetch_all(pool)
     .await?;

@@ -1,5 +1,5 @@
-use tokio::process::Command;
 use std::path::Path;
+use tokio::process::Command;
 
 pub async fn play_file(path: &str) -> Result<(), Box<dyn std::error::Error>> {
     if !Path::new(path).exists() {
@@ -7,7 +7,7 @@ pub async fn play_file(path: &str) -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    let status =  Command::new("mpv").arg(path).status().await?;
+    let status = Command::new("mpv").arg(path).status().await?;
 
     if status.success() {
         println!("Finished Playing: {}", path);

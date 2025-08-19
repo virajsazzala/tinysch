@@ -1,4 +1,4 @@
-use sqlx::{sqlite::SqlitePoolOptions, Pool, Sqlite};
+use sqlx::{Pool, Sqlite, sqlite::SqlitePoolOptions};
 use std::path::Path;
 use tokio::fs;
 
@@ -7,12 +7,16 @@ pub async fn init_db() -> Result<Pool<Sqlite>, sqlx::Error> {
 
     if let Some(parent) = Path::new(db_file).parent() {
         if !parent.as_os_str().is_empty() {
-            fs::create_dir_all(parent).await.expect("Failed to create db directory");
+            fs::create_dir_all(parent)
+                .await
+                .expect("Failed to create db directory");
         }
     }
 
     if !Path::new(db_file).exists() {
-        fs::File::create(db_file).await.expect("Failed to create db file");
+        fs::File::create(db_file)
+            .await
+            .expect("Failed to create db file");
     }
 
     let pool = SqlitePoolOptions::new()
